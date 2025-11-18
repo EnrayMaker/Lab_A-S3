@@ -187,6 +187,30 @@ public:
     }
 };
 
+// сортировка вставками 
+stats insertion_sort(std::vector<int>& vec) {
+    stats s;
+    DoublyLinkedList list;
+    list.from_vector(vec, s);
+    stats sort_stats = list.insertion_sort();
+    s.comparison_count += sort_stats.comparison_count;
+    s.copy_count += sort_stats.copy_count;
+    list.to_vector(vec, s);
+    return s;
+}
+
+// сортировка расчёской 
+stats comb_sort(std::vector<int>& vec) {
+    stats s;
+    DoublyLinkedList list;
+    list.from_vector(vec, s);
+    stats sort_stats = list.comb_sort();
+    s.comparison_count += sort_stats.comparison_count;
+    s.copy_count += sort_stats.copy_count;
+    list.to_vector(vec, s);
+    return s;
+}
+
 int main() {
 
     return 0;
