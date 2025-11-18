@@ -211,6 +211,43 @@ stats comb_sort(std::vector<int>& vec) {
     return s;
 }
 
+// вспомогательная рекурсивная функция qs
+void quick_sort_helper(std::vector<int>& vec, size_t low, size_t high, stats& s) {
+    if (low >= high) return;
+
+    int pivot = vec[high]; // последний для простоты
+    size_t i = low;
+    for (size_t j = low; j < high; ++j) {
+        s.comparison_count++;
+        if (vec[j] < pivot) {
+            std::swap(vec[i], vec[j]);
+            s.copy_count += 3;
+            ++i;
+        }
+    }
+    std::swap(vec[i], vec[high]);
+    s.copy_count += 3;
+
+    if (i > 0) quick_sort_helper(vec, low, i - 1, s);
+    quick_sort_helper(vec, i + 1, high, s);
+}
+
+// основная функция быстрой сортировки
+stats quick_sort(std::vector<int>& vec) {
+    stats s;
+    if (vec.empty()) return s;
+
+    quick_sort_helper(vec, 0, vec.size() - 1, s);
+    return s;
+}
+
+//функция выбора сортировки
+stats choose_sort(const std::string& sort_type, std::vector<int>& data) {
+    if (sort_type == "insertion") return insertion_sort(data);
+    if (sort_type == "comb") return comb_sort(data);
+    return quick_sort(data);
+}
+
 int main() {
 
     return 0;
