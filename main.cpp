@@ -249,6 +249,40 @@ stats choose_sort(const std::string& sort_type, std::vector<int>& data) {
 }
 
 int main() {
+    std::vector<size_t> sizes = {1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 25000, 50000, 100000};
+    // типы сортировок
+    std::vector<std::string> sort_types = {"insertion", "comb", "quick"};
+
+    std::cout << "size,sort_type,case,comparisons,copies\n";
+
+    for (size_t size : sizes) {
+        for (const std::string& sort_type : sort_types) {
+            // а) Отсортированный массив
+            std::vector<int> data(size);
+            for (size_t i = 0; i < size; ++i) data[i] = static_cast<int>(i);
+            stats st = choose_sort(sort_type, data);
+            std::cout << size << "," << sort_type << ",sorted," << st.comparison_count << "," << st.copy_count << "\n";
+
+            // б) Обратно отсортированный массив
+            for (size_t i = 0; i < size; ++i) data[i] = static_cast<int>(size - i);
+            st = choose_sort(sort_type, data);
+            std::cout << size << "," << sort_type << ",reverse," << st.comparison_count << "," << st.copy_count << "\n";
+
+            // в) Среднее для 100 случайных массивов
+            stats avg{0, 0};
+            for (int run = 0; run < 100; ++run) {
+                std::mt19937 gen(42 + run); // зерно
+                std::uniform_int_distribution<int> dis(-1000000, 1000000);
+                for (auto& x : data) x = dis(gen); // переиспользуем data для random
+                stats current_st = choose_sort(sort_type, data);
+                avg.comparison_count += current_st.comparison_count;
+                avg.copy_count += current_st.copy_count;
+            }
+            avg.comparison_count /= 100;
+            avg.copy_count /= 100;
+            std::cout << size << "," << sort_type << ",average," << avg.comparison_count << "," << avg.copy_count << "\n";
+        }
+    }
 
     return 0;
 }
